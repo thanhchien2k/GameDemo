@@ -18,10 +18,12 @@ public class Meteorite : MonoBehaviour, IHealth
 
     float screenWidth = Screen.width;
     float screenHeight = Screen.height;
+    float lifeTime;
 
     private void Awake()
     {
         isDie = false;
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -29,26 +31,33 @@ public class Meteorite : MonoBehaviour, IHealth
         speed = Random.Range(minspeed,maxspeed);
         CurrentHealth = (int)Random.Range(1, maxhealth);
         transform.localScale = Vector3.one *CurrentHealth;
+        lifeTime = 0;
     }
 
     private void Start()
     {
-        Vector3 screenPosition = new Vector3(Random.Range(0,screenWidth),screenHeight,0);
+        Vector3 screenPosition = new Vector3(Random.Range(0,screenWidth), Random.Range(screenHeight, screenHeight+100f), 0);
         Vector3 newPos = Camera.main.ScreenToWorldPoint(screenPosition);
-
-        transform.position = new Vector3(newPos.x, newPos.y+ 1f);
+        transform.position = new Vector3(newPos.x, newPos.y);
     }
     void Update()
     {
         MoveDown();
+        lifeTime += Time.deltaTime;
+        if (lifeTime > 5f)
+        {
+            DesActive();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if (collision.CompareTag("Bullet"))
         {
             TakeDamage(1);
             collision.gameObject.GetComponent<Bullet>().IsShooting = false;
+            collision.gameObject.GetComponent<Bullet>().DesActive();
         }
     }
 
@@ -67,5 +76,9 @@ public class Meteorite : MonoBehaviour, IHealth
         transform.Translate(Vector3.down * speed * Time.deltaTime);
     }
 
+    private void DesActive()
+    {
+        gameObject.SetActive(false);
+    }
 
 }
