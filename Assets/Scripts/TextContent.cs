@@ -11,23 +11,24 @@ public class TextContent : MonoBehaviour
     private void Awake()
     {
         textMesh = GetComponent<TMP_Text>();
+        
+    }
+
+    private void Start()
+    {
+        TimeManager.instance.LoadData();
     }
 
     private void Update()
     {
-
-        if (PlayerControll.isDie && TimeManager.instance.IsSave)
-        {
+            
             string score;
             score = TimeManager.instance.ScoreData.currentScore.ToString("F2");
             if (TimeManager.instance.IsHome())
             {
                 score = TimeManager.instance.ScoreData.highestScore.ToString("F2");
-                Debug.Log("home");
 
             }
             textMesh.text = score;
-
-        }
     }
 }

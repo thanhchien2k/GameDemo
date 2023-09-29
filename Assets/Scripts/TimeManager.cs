@@ -40,8 +40,8 @@ public class TimeManager : MonoBehaviour
     }
 
     private void Update()
-    {   Debug.Log(isGameOver && !IsSave);
-        if (isGameOver && !IsSave)
+    {   Debug.Log(isGameOver && !IsSave && !IsHome());
+        if (isGameOver && !IsSave && !IsHome())
         {
             Debug.Log("tinh time");
              gameTime = Time.time - startTime;
@@ -73,7 +73,7 @@ public class TimeManager : MonoBehaviour
                     ScoreData.highestScore = highestScore;
                 }
             }
-            
+            Debug.Log("da load");
             reader.Close();
         }
 
@@ -106,7 +106,7 @@ public class TimeManager : MonoBehaviour
     public void LoadScene(int _index)
     {
         SceneManager.LoadScene(_index);
-        IsSave = false;
+        StartCoroutine(DelayedFunction());
         startTime = Time.time;
 
     }
