@@ -7,20 +7,15 @@ public class MeteoriteHolder : MonoBehaviour
     [SerializeField] private GameObject meteoritePrefab;
     [SerializeField] private int minBullet;
     [SerializeField] private int maxBullet;
-    private ObjectPool meteoriteHolder;
+    [HideInInspector]public ObjectPool meteoriteHolder;
 
 
     private void Start()
     {
         // Khởi tạo Object Pool cho đạn, bạn có thể thay đổi initialSize và parentTransform tùy theo cần
         meteoriteHolder = new ObjectPool(meteoritePrefab, minBullet, maxBullet, transform);
-        Invoke("SpwanMeteorite", 2f);
+        InvokeRepeating("SpwanMeteorite", 0.5f, 1f);
 
-    }
-
-    private void Update()
-    {
-        
     }
     public void ReturnBullet(GameObject bullet)
     {
@@ -30,11 +25,17 @@ public class MeteoriteHolder : MonoBehaviour
 
     private void SpwanMeteorite()
     {
-        int numberOfMeterial = Random.Range(minBullet, maxBullet - 2*minBullet);
+        if (PlayerControll.isDie) return;
+        int numberOfMeterial = Random.Range(1, 2);
         for (int i = 1; i <= numberOfMeterial; i++)
         {
             Meteorite meteorite = meteoriteHolder.GetObject().GetComponent<Meteorite>();
             meteorite.gameObject.SetActive(true);
         }
+    }
+
+    internal object GetObject()
+    {
+        throw new System.NotImplementedException();
     }
 }

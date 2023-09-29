@@ -8,6 +8,10 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private Transform attackPoint;
     // Start is called before the first frame update
     Vector3 mousePosition;
+    private Vector2 shootDirection;
+
+    public Vector2 ShootDirection { get => shootDirection; set => shootDirection = value; }
+
     void Start()
     {
         bulletHolder = FindObjectOfType<BulletHolder>();
@@ -21,7 +25,7 @@ public class PlayerAttack : MonoBehaviour
         {
             mousePosition = Input.mousePosition;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            Vector2 shootDirection = (mousePosition - transform.position).normalized;
+            shootDirection = (mousePosition - transform.position).normalized;
             transform.up = shootDirection;
             bulletHolder.ShootBullet(attackPoint.position, shootDirection);
         }

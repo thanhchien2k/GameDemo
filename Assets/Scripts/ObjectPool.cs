@@ -28,19 +28,6 @@ public class ObjectPool
 
     public GameObject GetObject()
     {
-        if (objectPool.Count > maxPoolSize)
-        {
-            for (int i = 0; i < objectPool.Count - InitialSize; i++)
-            {
-                if (!objectPool[i].gameObject.activeInHierarchy)
-                {
-                    GameObject objToRemove = objectPool[i];
-                    objectPool.RemoveAt(i);
-                    GameObject.Destroy(objToRemove.gameObject);
-                }
-            }
-        }
-
         foreach (GameObject obj in objectPool)
         {
             if (!obj.gameObject.activeInHierarchy)
