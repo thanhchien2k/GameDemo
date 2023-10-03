@@ -17,7 +17,7 @@ public class MeteoriteHolder : MonoBehaviour
         InvokeRepeating("SpwanMeteorite", 0.5f, 1f);
 
     }
-    public void ReturnBullet(GameObject bullet)
+    public void ReturnToPool(GameObject bullet)
     {
         // Trả đạn về Object Pool (nếu cần)
         meteoriteHolder.ReturnObject(bullet);
@@ -32,10 +32,5 @@ public class MeteoriteHolder : MonoBehaviour
             Meteorite meteorite = meteoriteHolder.GetObject().GetComponent<Meteorite>();
             meteorite.gameObject.SetActive(true);
         }
-    }
-
-    internal object GetObject()
-    {
-        throw new System.NotImplementedException();
     }
 }

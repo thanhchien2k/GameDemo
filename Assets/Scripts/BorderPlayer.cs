@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class BorderPlayer : MonoBehaviour
@@ -17,7 +16,7 @@ public class BorderPlayer : MonoBehaviour
     }
 
     private void LateUpdate()
-    {
+    {   
         Vector3 viewPos = transform.position;
         viewPos.x = Mathf.Clamp(viewPos.x, -screenBounds.x + playerWidth, screenBounds.x - playerWidth);
         viewPos.y = Mathf.Clamp(viewPos.y, -screenBounds.y + playerHeight - 0.2f, screenBounds.y - playerHeight);

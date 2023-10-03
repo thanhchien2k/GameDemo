@@ -99,10 +99,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a904394d481ddd44693e1433c4c717b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxspeed: 5
-  minspeed: 2.33
+  maxspeed: 4.04
+  minspeed: 2.54
+  player: {fileID: 2292647097134903307, guid: 1432006103aebe34cb8c41a55432a179, type: 3}
   maxhealth: 4
   currentHealth: 0
+  holder: {fileID: 0}
 --- !u!61 &6410211002254669987
 BoxCollider2D:
   m_ObjectHideFlags: 0

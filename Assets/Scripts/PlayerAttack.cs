@@ -20,14 +20,15 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        mousePosition = Input.mousePosition;
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        mousePosition = new Vector3 (mousePosition.x, mousePosition.y, 0);
+        shootDirection = (mousePosition - transform.position).normalized;
+        transform.up = shootDirection;
+        
         if (Input.GetMouseButtonDown(0))
         {
-            mousePosition = Input.mousePosition;
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            shootDirection = (mousePosition - transform.position).normalized;
-            transform.up = shootDirection;
-            bulletHolder.ShootBullet(attackPoint.position, shootDirection);
+            bulletHolder.ShootBullet(attackPoint.position, mousePosition);
         }
     }
 

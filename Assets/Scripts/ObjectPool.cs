@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectPool 
 {
-    private List<GameObject> objectPool = new List<GameObject>();
+    private Stack<GameObject> objectPool;
     private GameObject objectPrefab;
     private Transform poolParent;
     [SerializeField] private int initialSize;
@@ -14,6 +14,7 @@ public class ObjectPool
 
     public ObjectPool(GameObject prefab, int initialSize, int maxPoolSize, Transform parentTransform = null)
     {
+        objectPool = new Stack<GameObject>();
         objectPrefab = prefab;
         poolParent = parentTransform;
         this.maxPoolSize = maxPoolSize;
@@ -28,43 +29,21 @@ public class ObjectPool
 
     public GameObject GetObject()
     {
-        foreach (GameObject obj in objectPool)
+        if (objectPool.Count == 0)
         {
-            if (!obj.gameObject.activeInHierarchy)
-            {
-                obj.gameObject.SetActive(true);
-                return obj;
-            }
+            CreateObject();
         }
 
-        if (objectPool.Count < maxPoolSize)
-        {   
-            GameObject newObj = CreateObject();
-            newObj.gameObject.SetActive(true);
-            return newObj;
-        }
-        else
-        {
-            for (int i = 0; i < objectPool.Count - InitialSize; i++)
-            {
-                if (!objectPool[i].gameObject.activeInHierarchy)
-                {
-                    GameObject objToRemove = objectPool[i];
-                    objectPool.RemoveAt(i);
-                    GameObject.Destroy(objToRemove.gameObject);
-                }
-            }
-
-            GameObject newObj = CreateObject();
-            newObj.gameObject.SetActive(true);
-            return newObj;
-        }
+        GameObject nextObject = objectPool.Pop();
+        nextObject.gameObject.SetActive(true);
+        return nextObject;
 
     }
 
     public void ReturnObject(GameObject obj)
     {
         obj.gameObject.SetActive(false);
+        objectPool.Push(obj);
     }
 
     private GameObject CreateObject()
@@ -77,7 +56,7 @@ public class ObjectPool
             newObj.transform.parent = poolParent;
         }
 
-        objectPool.Add(newObj);
+        objectPool.Push(newObj);
         return newObj;
     }
 }

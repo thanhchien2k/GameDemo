@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +18,6 @@ public class TimeManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("ok");
         if (instance == null)
         {
             instance = this;
@@ -40,10 +38,9 @@ public class TimeManager : MonoBehaviour
     }
 
     private void Update()
-    {   Debug.Log(isGameOver && !IsSave && !IsHome());
+    {   
         if (isGameOver && !IsSave && !IsHome())
         {
-            Debug.Log("tinh time");
              gameTime = Time.time - startTime;
             if (gameTime > ScoreData.highestScore)
             {
@@ -73,7 +70,7 @@ public class TimeManager : MonoBehaviour
                     ScoreData.highestScore = highestScore;
                 }
             }
-            Debug.Log("da load");
+           
             reader.Close();
         }
 

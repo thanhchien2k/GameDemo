@@ -1,16 +1,16 @@
 using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Meteorite : MonoBehaviour, IHealth
 {
     private float speed;
+    private float speedx;
     [Range(1.5f, 5f)]
     [SerializeField]private float maxspeed;
     [Range(1.5f, 5f)]
     [SerializeField]private float minspeed;
-
+    [SerializeField] private GameObject player;
     [SerializeField] private float maxhealth;
     [SerializeField] private float currentHealth;
     [SerializeField]private MeteoriteHolder holder;
@@ -28,25 +28,28 @@ public class Meteorite : MonoBehaviour, IHealth
     private void Awake()
     {
         isDie = false;
-        gameObject.SetActive(false);
-        
     }
 
     private void OnEnable()
     {
-        Vector3 screenPosition = new Vector3(Random.Range(0, screenWidth), Random.Range(screenHeight, screenHeight + 500f), 0);
+        CurrentHealth = (int)Random.Range(1, maxhealth);
+        Vector3 screenPosition = new Vector3(Random.Range(90f*currentHealth, screenWidth-90f*currentHealth), Random.Range(screenHeight, screenHeight + 500f), 0);
         Vector3 newPos = Camera.main.ScreenToWorldPoint(screenPosition);
         transform.position = new Vector3(newPos.x, newPos.y);
-
         speed = Random.Range(minspeed,maxspeed);
-        CurrentHealth = (int)Random.Range(1, maxhealth);
+        speedx = Random.Range(0,minspeed-2);
+        if (newPos.x > player.transform.position.x)
+        {
+            speedx =-speedx;
+        }
+        //ChangeSpeedX(newPos);
         transform.localScale = Vector3.one *CurrentHealth;
         lifeTime = 0;
     }
 
     private void Start()
     {
-
+        holder = GetComponentInParent<MeteoriteHolder>();
     }
     void Update()
     {
@@ -75,23 +78,15 @@ public class Meteorite : MonoBehaviour, IHealth
         else if (collision.CompareTag("Bullet"))
         {
             TakeDamage(1);
-            collision.gameObject.SetActive(false);
+            collision.gameObject.GetComponent<Bullet>().DesActive();
         }
         else if (collision.CompareTag("Enemy"))
         {
             if (gameObject.GetComponent<Meteorite>().CurrentHealth >= collision.gameObject.GetComponent<Meteorite>().currentHealth)
             {
-                holder = GetComponentInParent<MeteoriteHolder>();
-                Meteorite meteorite = holder.meteoriteHolder.GetObject().GetComponent<Meteorite>();
-                Vector3 centerPosition = (transform.position + collision.transform.position) / 2f;
-                meteorite.gameObject.SetActive(true);
-                meteorite.speed = (speed + collision.GetComponent<Meteorite>().speed) / 2f;
-                meteorite.CurrentHealth = Mathf.Clamp((CurrentHealth + collision.GetComponent<Meteorite>().CurrentHealth), 1, 2 * maxhealth);
-                meteorite.SetMeteorite(centerPosition, meteorite.CurrentHealth, meteorite.speed);
-                meteorite.ChangeScale();
-                if(collision.gameObject.activeInHierarchy) collision.gameObject.SetActive(false);
-                gameObject.SetActive(false);
-
+                speed = (speed + collision.GetComponent<Meteorite>().speed) / 2f;
+                currentHealth = Mathf.Clamp((CurrentHealth + collision.GetComponent<Meteorite>().CurrentHealth), 1, 2 * (maxhealth-1)-1);
+                if(collision.gameObject.activeInHierarchy) collision.gameObject.GetComponent<Meteorite>().DesActive();
             }
         }
 
@@ -106,23 +101,23 @@ public class Meteorite : MonoBehaviour, IHealth
 
     public void Die()
     {
-        gameObject.SetActive(false);
+        DesActive();
     }
 
     private void MoveDown()
     {
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
+        transform.Translate(new Vector3(speedx,-speed,0)*Time.deltaTime);
     }
 
     private void DesActive()
     {
-        gameObject.SetActive(false);
+        holder.ReturnToPool(gameObject);
     }
 
     private void ChangeScale()
     {
         Vector3 targetScale = new Vector3(currentHealth,currentHealth,transform.localScale.z);
-        transform.DOScale(targetScale, 0.5f)
+        transform.DOScale(targetScale, 0.8f)
             .SetEase(Ease.OutBounce);
     }
 
@@ -133,5 +128,4 @@ public class Meteorite : MonoBehaviour, IHealth
         CurrentHealth = health;
         lifeTime = 0;
     }
-
 }

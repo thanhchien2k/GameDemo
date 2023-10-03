@@ -28,7 +28,6 @@ public class BulletHolder : MonoBehaviour
 
     public void ReturnBullet(GameObject bullet)
     {
-        // Trả đạn về Object Pool (nếu cần)
         bulletPool.ReturnObject(bullet);
     }
 }
